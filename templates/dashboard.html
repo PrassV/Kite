@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block title %}Trading Dashboard - Select Stocks for Analysis{% endblock %}
+
+{% block content %}
+
+<!-- Dashboard Header -->
+<section class="bg-white border-b py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    <i class="fas fa-dashboard mr-2 text-blue-600"></i>
+                    Trading Dashboard
+                </h1>
+                <p class="text-gray-600 mt-1">
+                    Select stocks from your portfolio or search for analysis
+                </p>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">Portfolio Holdings</div>
+                    <div class="font-semibold text-lg">{{ portfolio_count }} stocks</div>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stock Selection Interface -->
+<section class="py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Search Bar -->
+        <div class="mb-8">
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input type="text" 
+                           id="stock-search" 
+                           placeholder="Search stocks (e.g., RELIANCE, TCS, HDFCBANK...)"
+                           class="w-full px-4 py-3 pl-12 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none text-lg">
+                    <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Search Results -->
+                <div id="search-results" class="hidden mt-2 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <!-- Portfolio Analysis -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">Portfolio Analysis</h3>
+                        <p class="text-blue-100 text-sm">Analyze your current holdings</p>
+                    </div>
+                    <i class="fas fa-briefcase text-3xl text-blue-200"></i>
+                </div>
+                <button onclick="analyzePortfolio()" 
+                        class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition">
+                    Analyze All Holdings
+                </button>
+            </div>
+            
+            <!-- Market Scanner -->
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">Market Scanner</h3>
+                        <p class="text-green-100 text-sm">Find trading opportunities</p>
+                    </div>
+                    <i class="fas fa-radar text-3xl text-green-200"></i>
+                </div>
+                <button onclick="scanMarket()" 
+                        class="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-green-50 transition">
+                    Scan Top Stocks
+                </button>
+            </div>
+            
+            <!-- Analysis History -->
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">Recent Analysis</h3>
+                        <p class="text-purple-100 text-sm">View past analysis results</p>
+                    </div>
+                    <i class="fas fa-history text-3xl text-purple-200"></i>
+                </div>
+                <button onclick="showHistory()" 
+                        class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50 transition">
+                    View History
+                </button>
+            </div>
+        </div>
+
+        <!-- Stock Selection Grid -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                <i class="fas fa-chart-line mr-2"></i>
+                Available Stocks for Analysis
+            </h2>
+            <p class="text-gray-600 mb-6">
+                Click on any stock to get comprehensive technical analysis with trading recommendations.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {% for stock in stocks %}
+            <div class="stock-card bg-white rounded-lg border-2 border-gray-200 p-4 hover:border-blue-500 hover:shadow-md transition cursor-pointer"
+                 onclick="analyzeStock('{{ stock }}')">
+                <div class="text-center">
+                    <div class="w-12 h-12 mx-auto mb-3 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-chart-bar text-blue-600"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-1">{{ stock }}</h3>
+                    <div class="text-xs text-gray-500 mb-3">NSE Equity</div>
+                    <button class="w-full bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-blue-700 transition">
+                        Analyze Now
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-8">
+            <button id="load-more" 
+                    onclick="loadMoreStocks()" 
+                    class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition">
+                <i class="fas fa-plus mr-2"></i>Load More Stocks
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Activity -->
+<section class="py-8 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            <i class="fas fa-clock mr-2"></i>Getting Started
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Tips -->
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <h3 class="font-semibold text-lg mb-4 text-blue-600">
+                    <i class="fas fa-lightbulb mr-2"></i>Pro Tips
+                </h3>
+                <ul class="space-y-3 text-gray-600">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                        Start with stocks from your current portfolio for familiar analysis
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                        Use the search function to quickly find any NSE/BSE equity
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                        Analysis includes entry points, targets, and stop-losses
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                        Volume analysis helps confirm pattern reliability
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Market Status -->
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <h3 class="font-semibold text-lg mb-4 text-green-600">
+                    <i class="fas fa-chart-line mr-2"></i>Analysis Features
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Fibonacci Retracements</span>
+                        <i class="fas fa-check text-green-500"></i>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Volume Analysis</span>
+                        <i class="fas fa-check text-green-500"></i>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Chart Patterns</span>
+                        <i class="fas fa-check text-green-500"></i>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Trendline Detection</span>
+                        <i class="fas fa-check text-green-500"></i>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Trading Recommendations</span>
+                        <i class="fas fa-check text-green-500"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let searchTimeout;
+
+// Stock search functionality
+document.getElementById('stock-search').addEventListener('input', function(e) {
+    const query = e.target.value.trim();
+    
+    clearTimeout(searchTimeout);
+    
+    if (query.length < 2) {
+        hideSearchResults();
+        return;
+    }
+    
+    // Debounce search
+    searchTimeout = setTimeout(() => {
+        searchStocks(query);
+    }, 300);
+});
+
+function searchStocks(query) {
+    showLoading(document.getElementById('search-results'), 'Searching...');
+    document.getElementById('search-results').classList.remove('hidden');
+    
+    fetch(`/api/search/${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            displaySearchResults(data);
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            document.getElementById('search-results').innerHTML = 
+                '<div class="p-4 text-red-600">Search failed. Please try again.</div>';
+        });
+}
+
+function displaySearchResults(results) {
+    const container = document.getElementById('search-results');
+    
+    if (!results || results.length === 0) {
+        container.innerHTML = '<div class="p-4 text-gray-500">No stocks found</div>';
+        return;
+    }
+    
+    const html = results.map(stock => `
+        <div class="p-3 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
+             onclick="selectSearchResult('${stock.symbol}', '${stock.name}')">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="font-semibold">${stock.symbol}</div>
+                    <div class="text-sm text-gray-500">${stock.name}</div>
+                </div>
+                <div class="text-xs bg-gray-100 px-2 py-1 rounded">${stock.exchange}</div>
+            </div>
+        </div>
+    `).join('');
+    
+    container.innerHTML = html;
+}
+
+function selectSearchResult(symbol, name) {
+    document.getElementById('stock-search').value = symbol;
+    hideSearchResults();
+    analyzeStock(symbol);
+}
+
+function hideSearchResults() {
+    document.getElementById('search-results').classList.add('hidden');
+}
+
+// Stock analysis
+function analyzeStock(symbol) {
+    showToast(`Starting analysis for ${symbol}...`, 'info');
+    window.location.href = `/analyze/${symbol}`;
+}
+
+// Dashboard actions
+function analyzePortfolio() {
+    showToast('Portfolio analysis feature coming soon!', 'info');
+}
+
+function scanMarket() {
+    showToast('Market scanner feature coming soon!', 'info');
+}
+
+function showHistory() {
+    showToast('Analysis history feature coming soon!', 'info');
+}
+
+function loadMoreStocks() {
+    showToast('Loading more stocks...', 'info');
+    // This could load more popular stocks or user's watchlist
+}
+
+// Click outside to hide search results
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#stock-search') && !e.target.closest('#search-results')) {
+        hideSearchResults();
+    }
+});
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    showToast('Welcome to your trading dashboard!', 'success');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Error - Trading Analysis Platform{% endblock %}
+
+{% block content %}
+
+<section class="py-16">
+    <div class="max-w-2xl mx-auto text-center px-4">
+        <i class="fas fa-exclamation-triangle text-6xl text-red-500 mb-6"></i>
+        
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">
+            Something went wrong
+        </h1>
+        
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 text-left">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-red-700">
+                        {{ error }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+            <a href="{{ url_for('dashboard') if session.authenticated else url_for('landing') }}" 
+               class="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-{{ 'dashboard' if session.authenticated else 'home' }} mr-2"></i>
+                Back to {{ 'Dashboard' if session.authenticated else 'Home' }}
+            </a>
+            
+            {% if session.authenticated %}
+            <button onclick="window.history.back()" 
+                    class="inline-flex items-center bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Go Back
+            </button>
+            {% else %}
+            <a href="{{ url_for('auth_login') }}" 
+               class="inline-flex items-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Login with Kite
+            </a>
+            {% endif %}
+        </div>
+        
+        <div class="mt-8 text-sm text-gray-500">
+            <p>If this problem persists, please check:</p>
+            <ul class="mt-2 list-disc list-inside space-y-1">
+                <li>Your Kite Connect API access is valid</li>
+                <li>The stock symbol exists on NSE/BSE</li>
+                <li>Your internet connection is stable</li>
+            </ul>
+        </div>
+        
+        <!-- Common Solutions -->
+        <div class="mt-8 bg-gray-50 rounded-lg p-6 text-left">
+            <h3 class="font-semibold text-gray-900 mb-3">
+                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                Common Solutions
+            </h3>
+            
+            <div class="space-y-3 text-sm text-gray-600">
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                    <div>
+                        <strong>Authentication Issues:</strong> Try logging out and logging back in with your Kite credentials
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                    <div>
+                        <strong>Invalid Stock Symbol:</strong> Make sure you're using the correct NSE/BSE symbol (e.g., RELIANCE, not RIL)
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                    <div>
+                        <strong>Analysis Timeout:</strong> Some complex analysis may take longer during market hours - please retry
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

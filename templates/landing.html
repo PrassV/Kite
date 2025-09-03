@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}Professional Trading Analysis Platform - Real-time Market Intelligence{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="gradient-bg text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="mb-8">
+            <h1 class="text-5xl font-bold mb-6 leading-tight">
+                Professional Trading Analysis
+                <span class="block text-yellow-300">In Real-Time</span>
+            </h1>
+            <p class="text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
+                Get comprehensive technical analysis with Fibonacci retracements, volume patterns, 
+                and chart pattern detection. Make informed trading decisions with actionable insights.
+            </p>
+        </div>
+        
+        <!-- CTA Buttons -->
+        <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+            <a href="{{ url_for('auth_login') }}" 
+               class="inline-flex items-center bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-yellow-300 transition transform hover:scale-105">
+                <i class="fas fa-chart-line mr-2"></i>
+                Analyze My Portfolio Now
+            </a>
+            <button onclick="scrollToFeatures()" 
+                    class="inline-flex items-center border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-gray-900 transition">
+                <i class="fas fa-play mr-2"></i>
+                See How It Works
+            </button>
+        </div>
+        
+        <!-- Debug: Direct Dashboard Link -->
+        <div class="mt-6">
+            <a href="{{ url_for('dashboard') }}" class="text-yellow-300 hover:text-yellow-200 text-sm underline">
+                (Debug: Go directly to Dashboard)
+            </a>
+        </div>
+        
+        <!-- Trust Indicators -->
+        <div class="mt-12 flex items-center justify-center space-x-8 text-sm opacity-80">
+            <div class="flex items-center">
+                <i class="fas fa-shield-alt mr-2"></i>Kite Connect Integrated
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-bolt mr-2"></i>Real-time Analysis
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-chart-bar mr-2"></i>Professional Grade
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Value Proposition -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                Why Successful Traders Choose Our Platform
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Stop guessing. Start trading with confidence using institutional-grade analysis tools.
+            </p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="text-center p-6 card-hover rounded-xl bg-gray-50">
+                <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-chart-line text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3">Comprehensive Analysis</h3>
+                <p class="text-gray-600">
+                    Fibonacci retracements, volume analysis, trendlines, and chart patterns - all in one view.
+                </p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="text-center p-6 card-hover rounded-xl bg-gray-50">
+                <div class="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-bolt text-2xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3">Real-time Intelligence</h3>
+                <p class="text-gray-600">
+                    Live data from your Kite account. Current patterns, not historical analysis.
+                </p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="text-center p-6 card-hover rounded-xl bg-gray-50">
+                <div class="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-target text-2xl text-purple-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3">Actionable Recommendations</h3>
+                <p class="text-gray-600">
+                    Specific entry points, targets, and stop-losses. No ambiguity, just clear action.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section id="features" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p class="text-xl text-gray-600">Get professional analysis in 3 simple steps</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="text-center">
+                <div class="w-12 h-12 mx-auto mb-4 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    1
+                </div>
+                <h3 class="text-xl font-semibold mb-3">Connect Your Kite Account</h3>
+                <p class="text-gray-600">
+                    Secure one-click authentication with your existing Kite Connect credentials.
+                </p>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="text-center">
+                <div class="w-12 h-12 mx-auto mb-4 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    2
+                </div>
+                <h3 class="text-xl font-semibold mb-3">Select Your Stocks</h3>
+                <p class="text-gray-600">
+                    Choose from your portfolio or search for any NSE/BSE equity for analysis.
+                </p>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="text-center">
+                <div class="w-12 h-12 mx-auto mb-4 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    3
+                </div>
+                <h3 class="text-xl font-semibold mb-3">Get Instant Analysis</h3>
+                <p class="text-gray-600">
+                    Comprehensive technical analysis with specific trading recommendations.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Deep Dive -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Content -->
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                    Professional-Grade Technical Analysis
+                </h2>
+                <div class="space-y-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Forward-Looking Fibonacci Analysis</h3>
+                            <p class="text-gray-600">Trend-aware retracements using recent swing points for current trading decisions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Volume-Confirmed Patterns</h3>
+                            <p class="text-gray-600">Chart patterns validated by volume analysis for higher probability setups.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Dynamic Trendlines</h3>
+                            <p class="text-gray-600">Forward-projecting trendlines relevant for current market structure.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Actionable Trading Setups</h3>
+                            <p class="text-gray-600">Specific entry triggers, targets, and stop-losses with risk-reward ratios.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visual -->
+            <div class="bg-gray-100 rounded-xl p-8 text-center">
+                <i class="fas fa-chart-area text-6xl text-blue-600 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Live Market Data</h3>
+                <p class="text-gray-600 mb-6">
+                    Real-time analysis using your Kite Connect data feed for the most current market insights.
+                </p>
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="text-sm text-gray-500 mb-2">Sample Analysis Output</div>
+                    <div class="text-left space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span>Current Trend:</span>
+                            <span class="text-green-600 font-semibold">Strong Uptrend</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Fibonacci 38.2%:</span>
+                            <span class="font-semibold">₹2,816.40</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Volume Status:</span>
+                            <span class="text-orange-600 font-semibold">High Activity</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Pattern:</span>
+                            <span class="text-blue-600 font-semibold">Ascending Triangle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-16 gradient-bg text-white">
+    <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold mb-4">
+            Ready to Trade with Confidence?
+        </h2>
+        <p class="text-xl mb-8 opacity-90">
+            Join successful traders who use professional analysis tools to make informed decisions.
+        </p>
+        
+        <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+            <a href="{{ url_for('auth_login') }}" 
+               class="inline-flex items-center bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-yellow-300 transition transform hover:scale-105">
+                <i class="fas fa-rocket mr-2"></i>
+                Start Free Analysis
+            </a>
+        </div>
+        
+        <div class="mt-6 text-sm opacity-75">
+            <i class="fas fa-lock mr-1"></i>
+            Secure authentication through Kite Connect • No data stored
+        </div>
+    </div>
+</section>
+
+<script>
+function scrollToFeatures() {
+    document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+
+{% endblock %}
