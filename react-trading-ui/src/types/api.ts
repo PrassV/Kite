@@ -55,21 +55,24 @@ export interface StockQuote {
 
 // Analysis Types
 export interface FibonacciLevel {
-  level: string;
+  level: number;
   price: number;
-  ratio: number;
+  ratio?: number;
   distance_percent: number;
-  significance: string;
+  significance?: string;
 }
 
 export interface ChartPattern {
   pattern_id: string;
   pattern_name: string;
   pattern_type: string;
-  status: string;
-  bias: string;
-  reliability_score: string;
+  status?: string;
+  bias?: string;
+  reliability_score: number;
   expected_direction: string;
+  entry_price?: number;
+  target_price?: number;
+  stop_loss?: number;
   trading_setup?: {
     entry_trigger?: number;
     target_price?: number;
@@ -89,12 +92,18 @@ export interface ChartPattern {
 }
 
 export interface VolumeProfile {
-  current_volume: number;
-  average_volume_30d: number;
-  volume_assessment: string;
-  volume_significance: string;
-  volume_trend: string;
-  volume_ratio_to_average: number;
+  total_volume?: number;
+  average_daily_volume?: number;
+  volume_weighted_average_price?: number;
+  significant_volume_levels?: any[];
+  current_volume?: number;
+  average_volume_30d?: number;
+  volume_assessment?: string;
+  volume_significance?: string;
+  volume_trend?: string;
+  volume_ratio?: number;
+  volume_ratio_to_average?: number;
+  significance?: string;
 }
 
 export interface VolumeAnomaly {
@@ -110,10 +119,12 @@ export interface VolumeAnomaly {
 export interface TrendAnalysis {
   direction: string;
   strength: string;
-  bias: string;
-  current_price: number;
-  sma_10: number;
-  sma_20: number;
+  bias?: string;
+  duration_days?: number;
+  key_levels?: any[];
+  current_price?: number;
+  sma_10?: number;
+  sma_20?: number;
 }
 
 export interface TradingRecommendation {
@@ -139,14 +150,39 @@ export interface TradingRecommendation {
   }>;
 }
 
+export interface TradingOpportunity {
+  type?: string;
+  description?: string;
+  entry_price?: number;
+  target_price?: number;
+  stop_loss?: number;
+  risk_reward_ratio?: number;
+  confidence_level?: number;
+  reliability?: number;
+  setup_type?: string;
+  setup_description?: string;
+  timeframe?: string;
+}
+
+export interface MathematicalAnalysisData {
+  hurst_exponent?: number;
+  fractal_dimension?: number;
+  shannon_entropy?: number;
+  lyapunov_exponent?: number;
+  detrended_fluctuation_analysis?: number;
+  mathematical_patterns?: any[];
+  chaos_indicators?: any[];
+  complexity_metrics?: any[];
+}
+
 export interface ComprehensiveAnalysis {
   analysis_summary: {
     stock_symbol: string;
     analysis_date: string;
     analysis_focus: string;
     current_price: number;
-    analysis_window: string;
-    market_session: string;
+    analysis_window?: string;
+    market_session?: string;
   };
   current_market_structure: {
     current_trend: TrendAnalysis;
@@ -156,8 +192,10 @@ export interface ComprehensiveAnalysis {
       "20_day": { direction: string; change: number; change_pct: number };
     };
     volatility: {
-      current_volatility_annualized: number;
+      current_volatility?: number;
+      volatility_percentile?: number;
       volatility_assessment: string;
+      current_volatility_annualized?: number;
     };
   };
   fibonacci_analysis: {
@@ -197,12 +235,29 @@ export interface ComprehensiveAnalysis {
       overall_assessment: string;
     };
     recent_volume_anomalies: {
-      volume_anomalies: VolumeAnomaly[];
+      spikes?: any[];
+      analysis_summary?: string;
+      volume_anomalies?: VolumeAnomaly[];
     };
   };
-  immediate_trading_plan: TradingRecommendation;
-  forward_looking_forecast: {
-    forecast_summary: {
+  immediate_trading_plan?: TradingRecommendation;
+  risk_management?: {
+    portfolio_risk?: number;
+    position_sizing?: string;
+    max_drawdown?: number;
+    stop_loss_strategy?: string;
+    stop_loss_levels?: {
+      percentage_stops?: {
+        conservative?: number;
+        moderate?: number;
+        tight?: number;
+      };
+    };
+    risk_per_trade?: number;
+    correlation_analysis?: any[];
+  };
+  forward_looking_forecast?: {
+    forecast_summary?: {
       analysis_date: string;
       current_price: number;
       primary_bias: string;
@@ -210,7 +265,7 @@ export interface ComprehensiveAnalysis {
       active_patterns_count: number;
       forecast_horizon: string;
     };
-    scenarios: Array<{
+    scenarios?: Array<{
       scenario_name: string;
       probability: string;
       target_price: number;
@@ -219,6 +274,23 @@ export interface ComprehensiveAnalysis {
       invalidation_level: number;
       description: string;
     }>;
+  };
+  trading_opportunities?: TradingOpportunity[];
+  mathematical_analysis?: MathematicalAnalysisData;
+  mathematical_indicators?: {
+    hurst_exponent?: number;
+    fractal_dimension?: number;
+    shannon_entropy?: number;
+    lyapunov_exponent?: number;
+    detrended_fluctuation_analysis?: number;
+    approximate_entropy?: number;
+    correlation_dimension?: number;
+    recurrence_quantification?: number;
+    multifractal_spectrum?: any[];
+    wavelet_analysis?: any[];
+    fourier_analysis?: any[];
+    chaos_game_representation?: any[];
+    phase_space_reconstruction?: any[];
   };
 }
 

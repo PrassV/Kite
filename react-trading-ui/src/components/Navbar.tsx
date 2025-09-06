@@ -6,7 +6,9 @@ import {
   ChartBarIcon, 
   UserIcon,
   ArrowRightOnRectangleIcon,
-  Cog6ToothIcon
+  Cog6ToothIcon,
+  BriefcaseIcon,
+  CpuChipIcon
 } from '@heroicons/react/24/outline';
 import { useAuthStore } from '../stores/authStore';
 
@@ -43,6 +45,22 @@ export const Navbar: React.FC = () => {
                   className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Dashboard
+                </Link>
+                
+                <Link
+                  to="/portfolio"
+                  className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  <BriefcaseIcon className="h-4 w-4" />
+                  <span>Portfolio</span>
+                </Link>
+                
+                <Link
+                  to="/agent"
+                  className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  <CpuChipIcon className="h-4 w-4" />
+                  <span>Agent</span>
                 </Link>
                 
                 {/* User Menu */}

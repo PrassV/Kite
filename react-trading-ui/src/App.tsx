@@ -9,6 +9,8 @@ import { Toaster } from 'react-hot-toast';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import AnalysisPage from './pages/AnalysisPage';
+import PortfolioPage from './pages/PortfolioPage';
+import AgentPage from './pages/AgentPage';
 import AuthCallback from './pages/AuthCallback';
 import NotFound from './pages/NotFound';
 
@@ -91,6 +93,24 @@ const App: React.FC = () => {
                 element={
                   <AuthGuard>
                     <AnalysisPage />
+                  </AuthGuard>
+                }
+              />
+              
+              <Route
+                path="/portfolio"
+                element={
+                  <AuthGuard>
+                    <PortfolioPage />
+                  </AuthGuard>
+                }
+              />
+              
+              <Route
+                path="/agent"
+                element={
+                  <AuthGuard>
+                    <AgentPage />
                   </AuthGuard>
                 }
               />

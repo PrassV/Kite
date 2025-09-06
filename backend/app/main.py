@@ -17,7 +17,7 @@ from datetime import datetime
 from .core.config import settings
 from .core.database import init_db, close_db
 from .core.redis_client import init_redis, close_redis
-from .routes import auth, analysis, stocks, health, monitoring
+from .routes import auth, analysis, stocks, health, monitoring, agent
 from .core.rate_limiter import setup_rate_limiting
 from .core.logging_config import setup_logging
 from .utils.monitoring import performance_monitor
@@ -44,6 +44,21 @@ async def lifespan(app: FastAPI):
     # Setup rate limiting
     setup_rate_limiting(app)
     logger.info("✅ Rate limiting configured")
+    
+    # Initialize mathematical analysis components
+    try:
+        # Test import of mathematical components to ensure they're available
+        import sys
+        sys.path.append('/app')  # Add to Python path for Railway deployment
+        from detector import DeterministicPatternDetector
+        from comprehensive_market_analyzer import generate_comprehensive_market_analysis
+        logger.info("✅ Mathematical analysis components loaded successfully")
+        logger.info("🔬 Advanced pattern detection: ✅ ENABLED")
+        logger.info("📊 Comprehensive market analysis: ✅ ENABLED") 
+        logger.info("🧮 13+ Mathematical indicators: ✅ ENABLED")
+    except ImportError as e:
+        logger.warning(f"⚠️  Mathematical components not fully available: {e}")
+        logger.info("📊 Falling back to simplified analysis")
     
     logger.info("🎯 Application startup complete")
     
@@ -232,6 +247,7 @@ app.include_router(health.router, prefix="/health", tags=["Health"])
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(analysis.router, prefix="/analysis", tags=["Analysis"])
 app.include_router(stocks.router, prefix="/stocks", tags=["Stocks"])
+app.include_router(agent.router, prefix="/agent", tags=["LivePositionalAgent"])
 app.include_router(monitoring.router, prefix="/monitoring", tags=["Monitoring"])
 
 
@@ -245,7 +261,15 @@ async def root():
         "status": "operational",
         "timestamp": datetime.utcnow().isoformat(),
         "docs": "/docs" if settings.ENVIRONMENT != "production" else "Documentation disabled in production",
-        "health": "/health"
+        "health": "/health",
+        "features": {
+            "mathematical_analysis": "✅ Advanced Pattern Detection with 13+ Indicators",
+            "real_time_integration": "✅ Kite Connect API",
+            "comprehensive_analysis": "✅ Fibonacci, Volume, Trendlines",
+            "ai_narratives": "✅ Gemini AI Integration",
+            "pattern_detection": "✅ Head&Shoulders, Triangles, Flags, etc.",
+            "mathematical_indicators": "✅ Hurst Exponent, Fractal Dimension, Shannon Entropy"
+        }
     }
 
 

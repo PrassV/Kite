@@ -27,6 +27,111 @@ from ..models.stocks import (
 router = APIRouter()
 logger = get_context_logger(__name__)
 
+# Add portfolio/holdings routes
+@router.get("/holdings")
+@rate_limit("stocks")
+async def get_user_holdings(
+    current_user: dict = Depends(get_current_user),
+    kite_client: AsyncKiteClient = Depends(get_kite_client)
+):
+    """Get user's holdings from Kite Connect"""
+    user_id = current_user.get("user_id")
+    
+    logger.info(f"📊 Fetching holdings", extra={"user_id": user_id})
+    
+    try:
+        holdings = await kite_client.get_holdings()
+        
+        logger.info(
+            f"✅ Holdings fetched successfully",
+            extra={
+                "user_id": user_id,
+                "holdings_count": len(holdings)
+            }
+        )
+        
+        return holdings
+        
+    except Exception as e:
+        logger.error(
+            f"❌ Failed to fetch holdings",
+            extra={
+                "user_id": user_id,
+                "error": str(e)
+            },
+            exc_info=True
+        )
+        
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch portfolio holdings"
+        )
+
+@router.get("/positions")
+@rate_limit("stocks")
+async def get_user_positions(
+    current_user: dict = Depends(get_current_user),
+    kite_client: AsyncKiteClient = Depends(get_kite_client)
+):
+    """Get user's positions from Kite Connect"""
+    user_id = current_user.get("user_id")
+    
+    logger.info(f"📈 Fetching positions", extra={"user_id": user_id})
+    
+    try:
+        positions_data = await kite_client.get_positions()
+        
+        # Extract day positions (most relevant for UI)
+        day_positions = positions_data.get("day", []) if positions_data else []
+        net_positions = positions_data.get("net", []) if positions_data else []
+        
+        # Combine both day and net positions, prioritizing day positions
+        all_positions = []
+        
+        # Add day positions first
+        for pos in day_positions:
+            if pos.get("quantity", 0) != 0:  # Only positions with actual quantity
+                all_positions.append({
+                    **pos,
+                    "position_type": "day"
+                })
+        
+        # Add net positions that aren't already in day positions
+        day_symbols = {pos.get("tradingsymbol") for pos in day_positions}
+        for pos in net_positions:
+            if pos.get("quantity", 0) != 0 and pos.get("tradingsymbol") not in day_symbols:
+                all_positions.append({
+                    **pos,
+                    "position_type": "net"
+                })
+        
+        logger.info(
+            f"✅ Positions fetched successfully", 
+            extra={
+                "user_id": user_id,
+                "day_positions": len(day_positions),
+                "net_positions": len(net_positions),
+                "total_active": len(all_positions)
+            }
+        )
+        
+        return all_positions
+        
+    except Exception as e:
+        logger.error(
+            f"❌ Failed to fetch positions",
+            extra={
+                "user_id": user_id,
+                "error": str(e)
+            },
+            exc_info=True
+        )
+        
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch trading positions"
+        )
+
 
 async def get_kite_client(current_user: dict = Depends(get_current_user)) -> AsyncKiteClient:
     """Get authenticated Kite client for current user"""

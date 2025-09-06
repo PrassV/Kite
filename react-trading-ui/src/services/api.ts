@@ -11,8 +11,8 @@ import type {
   HealthCheck
 } from '../types/api';
 
-// API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://kite-tau.vercel.app';
+// API Configuration - Connect to FastAPI backend
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -133,6 +133,18 @@ export const stocksAPI = {
   removeFromWatchlist: async (symbol: string) => {
     const response = await api.delete(`/stocks/watchlist/${symbol}`);
     return response.data;
+  },
+
+  // Get user portfolio/holdings
+  getPortfolio: async () => {
+    const response = await api.get('/stocks/holdings');
+    return response.data;
+  },
+
+  // Get positions
+  getPositions: async () => {
+    const response = await api.get('/stocks/positions');
+    return response.data;
   }
 };
 
@@ -140,11 +152,105 @@ export const stocksAPI = {
 export const analysisAPI = {
   // Get comprehensive analysis
   getComprehensiveAnalysis: async (symbol: string): Promise<ComprehensiveAnalysis> => {
-    const response = await api.post<ComprehensiveAnalysis>(`/analysis/${symbol}`, {
+    const response = await api.post(`/analysis/${symbol}`, {
       analysis_type: 'comprehensive',
-      timeframe: '1D'
+      timeframe: 'day',
+      analysis_window: 60,
+      include_patterns: true,
+      include_volume: true,
+      include_fibonacci: true,
+      cache_duration: 300
     });
-    return response.data;
+    
+    // Transform FastAPI response to expected frontend format
+    const backendData = response.data;
+    const comprehensiveData = backendData.comprehensive_data || {};
+    
+    // Return comprehensive analysis data with proper formatting
+    return {
+      analysis_summary: {
+        stock_symbol: symbol,
+        analysis_date: new Date().toISOString().split('T')[0],
+        current_price: comprehensiveData.analysis_summary?.current_price || 0,
+        analysis_focus: comprehensiveData.analysis_summary?.analysis_focus || 'Mathematical Analysis'
+      },
+      fibonacci_analysis: {
+        current_fibonacci_analysis: {
+          current_price: comprehensiveData.analysis_summary?.current_price || 0,
+          trend_direction: 'Mathematical Analysis',
+          most_recent_swing_high: { price: 0, date: '' },
+          most_recent_swing_low: { price: 0, date: '' }
+        },
+        fibonacci_retracements: {
+          retracement_levels: (comprehensiveData.fibonacci_analysis?.key_levels || []).map((level: any) => ({
+            level: parseFloat(level.ratio || 0),
+            price: level.price || 0,
+            distance_percent: Math.abs(level.distance_percent || 0)
+          }))
+        },
+        fibonacci_extensions: {
+          extension_levels: []
+        },
+        closest_levels: [],
+        current_level_context: ''
+      },
+      active_patterns: (comprehensiveData.chart_patterns || []).map((pattern: any) => ({
+        pattern_id: pattern.pattern_id || 'UNKNOWN',
+        pattern_name: pattern.pattern_name || 'Unknown Pattern',
+        pattern_type: pattern.pattern_type || 'General',
+        reliability_score: pattern.reliability_score || 0,
+        expected_direction: pattern.bias || 'Neutral'
+      })),
+      volume_analysis: {
+        volume_profile: {
+          total_volume: 0,
+          average_daily_volume: 0,
+          volume_weighted_average_price: 0,
+          significant_volume_levels: []
+        },
+        volume_price_confirmation: {
+          recent_confirmations: [],
+          confirmation_rate: '',
+          overall_assessment: ''
+        },
+        recent_volume_anomalies: {
+          spikes: [],
+          analysis_summary: ''
+        }
+      },
+      current_market_structure: {
+        current_trend: {
+          direction: comprehensiveData.current_market_structure?.trend?.direction || 'Neutral',
+          strength: comprehensiveData.current_market_structure?.trend?.strength || 'Medium',
+          duration_days: 0,
+          key_levels: []
+        },
+        momentum: {
+          '1_day': { direction: 'Neutral', change: 0, change_pct: 0 },
+          '5_day': { direction: 'Neutral', change: 0, change_pct: 0 },
+          '20_day': { direction: 'Neutral', change: 0, change_pct: 0 }
+        },
+        volatility: {
+          current_volatility: 0,
+          volatility_percentile: 0,
+          volatility_assessment: 'Normal'
+        }
+      },
+      trading_opportunities: backendData.trading_opportunities || [],
+      mathematical_analysis: backendData.mathematical_analysis || {},
+      mathematical_indicators: backendData.mathematical_indicators || {},
+      immediate_trading_plan: {
+        trading_bias: 'Neutral',
+        immediate_actions: [],
+        position_recommendations: {
+          current_stance: 'Hold',
+          position_sizing: 'Normal',
+          hold_period: 'Medium-term'
+        },
+        fibonacci_key_levels: []
+      },
+      risk_management: backendData.risk_management || {}
+    };
   },
 
   // Get quick analysis
