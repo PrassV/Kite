@@ -4,6 +4,8 @@ Ports the comprehensive market analyzer to async FastAPI service with caching
 """
 
 import asyncio
+import sys
+import os
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta

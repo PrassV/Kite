@@ -211,7 +211,7 @@ class SystemMetrics(Base):
     metric_name = Column(String(100), nullable=False, index=True)
     metric_value = Column(Float, nullable=False)
     metric_unit = Column(String(20), nullable=True)
-    metadata = Column(JSON, nullable=True)
+    metric_metadata = Column(JSON, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow, index=True)
 
 

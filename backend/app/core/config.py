@@ -3,7 +3,8 @@ Application configuration using Pydantic Settings
 Supports environment variables and Railway deployment
 """
 
-from pydantic import BaseSettings, validator
+from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from typing import List, Optional
 import os
 
@@ -86,27 +87,31 @@ class Settings(BaseSettings):
     MAX_RETRIES: int = 3
     RETRY_BACKOFF: float = 0.5
     
-    @validator('CORS_ORIGINS', pre=True)
+    @field_validator('CORS_ORIGINS', mode='before')
+    @classmethod
     def parse_cors_origins(cls, v):
         """Parse CORS origins from string or list"""
         if isinstance(v, str):
             return [origin.strip() for origin in v.split(',')]
         return v
     
-    @validator('ALLOWED_HOSTS', pre=True)
+    @field_validator('ALLOWED_HOSTS', mode='before')
+    @classmethod
     def parse_allowed_hosts(cls, v):
         """Parse allowed hosts from string or list"""
         if isinstance(v, str):
             return [host.strip() for host in v.split(',')]
         return v
     
-    @validator('DATABASE_URL', pre=True)
-    def validate_database_url(cls, v, values):
+    @field_validator('DATABASE_URL', mode='before')
+    @classmethod
+    def validate_database_url(cls, v, info):
         """Auto-construct DATABASE_URL if components are provided"""
         if v:
             return v
         
         # Try to construct from individual components
+        values = info.data if info else {}
         host = values.get('DB_HOST')
         port = values.get('DB_PORT', 5432)
         name = values.get('DB_NAME')
@@ -118,13 +123,15 @@ class Settings(BaseSettings):
         
         return None
     
-    @validator('REDIS_URL', pre=True)
-    def validate_redis_url(cls, v, values):
+    @field_validator('REDIS_URL', mode='before')
+    @classmethod
+    def validate_redis_url(cls, v, info):
         """Auto-construct REDIS_URL if components are provided"""
         if v:
             return v
         
         # Try to construct from individual components
+        values = info.data if info else {}
         host = values.get('REDIS_HOST')
         port = values.get('REDIS_PORT', 6379)
         password = values.get('REDIS_PASSWORD')

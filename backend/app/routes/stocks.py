@@ -27,6 +27,31 @@ from ..models.stocks import (
 router = APIRouter()
 logger = get_context_logger(__name__)
 
+# Dependency function for getting Kite client
+async def get_kite_client(current_user: dict = Depends(get_current_user)) -> AsyncKiteClient:
+    """Get authenticated Kite client for current user"""
+    
+    kite_client = AsyncKiteClient()
+    
+    # Get Kite access token from user data
+    kite_access_token = current_user.get("kite_access_token")
+    user_id = current_user.get("user_id")
+    
+    if not kite_access_token:
+        logger.error(
+            "❌ No Kite access token found for user",
+            extra={"user_id": user_id}
+        )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Kite access token not found. Please re-authenticate."
+        )
+    
+    # Set the access token
+    kite_client.set_access_token(kite_access_token)
+    
+    return kite_client
+
 # Add portfolio/holdings routes
 @router.get("/holdings")
 @rate_limit("stocks")
@@ -131,31 +156,6 @@ async def get_user_positions(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch trading positions"
         )
-
-
-async def get_kite_client(current_user: dict = Depends(get_current_user)) -> AsyncKiteClient:
-    """Get authenticated Kite client for current user"""
-    
-    kite_client = AsyncKiteClient()
-    
-    # Get Kite access token from user data
-    kite_access_token = current_user.get("kite_access_token")
-    user_id = current_user.get("user_id")
-    
-    if not kite_access_token:
-        logger.error(
-            "❌ No Kite access token found for user",
-            extra={"user_id": user_id}
-        )
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Kite access token not found. Please re-authenticate."
-        )
-    
-    # Set access token
-    kite_client.set_access_token(kite_access_token, user_id)
-    
-    return kite_client
 
 
 @router.get("/search", response_model=StockSearchResponse)
